@@ -15,7 +15,8 @@
   "homepage": "https://https://github.com/shtjrgus010/wetube-reloaded#readme",
   "dependencies": {
     "express": "^4.21.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "pug": "^3.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",

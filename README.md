@@ -4,16 +4,25 @@
 
 ### router
 
-1. / -> Home
-2. /join -> Join
-3. /login -> Login
-4. /search -> Search
+/ -> Home
+/join -> Join
+/login -> Login
+/search -> Search
 
-5. /users/edit -> Edit user
-6. /users/delete -> Delete user
+/users/:id -> See User
+/users/logout -> Log Out
+/users/edit -> Edit user
+/users/delete -> Delete user
 
-7. /videos/watch -> Watch Video
-8. /videos/edit -> Edit Video
-9. /videos/delete -> Delete Video
-10. /videos/comments -> Comment on a video
-11. videos/comments/delete -> Delete comment
+/videos/:id -> See Video
+/videos/:id/edit -> Edit Video
+/videos/:id/delete -> Delete Video
+/videos/upload -> Upload Video
+
+## 2024.10.22
+
+### Updated routes to use dynamic parameters (:id)
+
+정규식을 사용(\\d+)해 숫자만 허용
+
+nodeJs의 경우 :id가 코드 줄에서 상위에 위치하면 id가 포함하지 않는 경로에도 영향을 미치기 때문에 하위에 위치
