@@ -27,6 +27,8 @@
 
 nodeJs의 경우 :id가 코드 줄에서 상위에 위치하면 id가 포함하지 않는 경로에도 영향을 미치기 때문에 하위에 위치
 
+---
+
 ## 2024.10.24
 
 ### Write Template
@@ -67,3 +69,30 @@ mixin video(video)
         li #{video.rating}/5
         li #{video.comments} comments.
 ```
+
+---
+
+## 2024.10.25
+
+### post request
+
+1. Setting up the server with `express.urlencoded()`
+
+```javascript
+app.use(express.urlencoded({ extended: true }));
+```
+
+- form 데이터를 파싱해 `req.body`에서 사용할 수 있도록 설정
+
+2. Update title with `postEdit` controller
+
+```javascript
+export const postEdit = (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  videos[id - 1].title = title;
+  res.redirect(`/videos/${id}`);
+};
+```
+
+- form 에서 입력한 새로운 제목으로 비디오 제목을 업데이트하고 해당 페이지를 redirect
