@@ -8,13 +8,14 @@
     "url": "git+https://github.com/shtjrgus010/wetube-reloaded.git"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node src/server.js"
+    "dev": "nodemon --exec babel-node src/init.js"
   },
   "author": "Seokhyun",
   "license": "MIT",
   "homepage": "https://https://github.com/shtjrgus010/wetube-reloaded#readme",
   "dependencies": {
     "express": "^4.21.1",
+    "mongoose": "^8.7.3",
     "morgan": "^1.10.0",
     "pug": "^3.0.3"
   },
