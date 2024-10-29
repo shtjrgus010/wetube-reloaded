@@ -204,3 +204,48 @@ export const postUpload = async (req, res) => {
   }
 };
 ```
+
+## 2024.10.29
+
+### Video Edit Function
+
+1. Configure `getEdit` controller
+
+- 비디오를 편집하기 위해 `id`를 통해 데이터벵스에서 불러와 템플릿에 전달
+- 비디오에 해당하는 `id`가 없을 경우, "404" 페이지로 이동시켜 사용자가 찾을 수 없다는 메시지 표시
+
+```javascript
+export const getEdit = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404");
+  }
+  return res.render("edit", {
+    video,
+  });
+};
+```
+
+2. Configure `postEdit` controller
+
+- `id`를 통해 비디오가 존재하는지 확인한 후, title, description, hashtags를 업데이트하고 수정된 비디오 페이지로 리디렉션
+
+```javascript
+export const postEdit = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, hashtags } = req.body;
+  const video = await Video.exists({ _id: id });
+  if (!video) {
+    return res.render("404");
+  }
+  await Video.findByIdAndUpdate(id, {
+    title,
+    description,
+    hashtags: hashtags
+      .split(",")
+      .map((word) => (word.startWith("#") ? word : `#${word}`)),
+  });
+  res.redirect(`/video/${id}`);
+};
+```
