@@ -249,3 +249,53 @@ export const postEdit = async (req, res) => {
   res.redirect(`/video/${id}`);
 };
 ```
+
+## 2024.10.30
+
+### Middleware, Static Method, Delete, and Search Functions
+
+1. Middleware
+
+- 비디오가 데이터베이스에 저장되기 전 실행되는 `pre("save")` 미들웨어를 설정해 저장 직전에 작업을 추가할 수 있음
+
+```javascript
+videoSchema.pre("save", async function () {
+  console.log("We are about to save:", this);
+});
+```
+
+2. Static Method: `formatHashtags`
+
+- Static Method를 사용해서 `Middleware`의 작업을 전가시킴.
+- Static Method의 장점으로는 `Model` 클래스 내에서 직접 호출할 수 있어 가독성이 좋아짐
+
+```javascript
+videoSchema.static("formatHashtags", function (hashtags) {
+  return hashtags
+    .split(",")
+    .map((word) => (word.startsWith("#") ? word : `#${word}`));
+});
+```
+
+3. Delete Video Function
+
+- 특정 `id`에 해당하는 비디오를 찾아 삭제
+
+4. Search Function
+
+- `search` 기능은 사용자가 입력한 `keyword`로 끝나는 비디오 제목을 검색하고, 정규식을 사용하여 대소문자를 구분하지 않고 검색
+
+```javascript
+export const search = async (req, res) => {
+  const { keyword } = req.query;
+  let videos = [];
+  if (keyword) {
+    videos = await Video.find({
+      title: {
+        $regex: new RegExp(`${keyword}$`, "i"),
+      },
+    });
+  }
+  return res.render("search", { pageTitle: "Search", videos });
+};
+```
