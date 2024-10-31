@@ -299,3 +299,61 @@ export const search = async (req, res) => {
   return res.render("search", { pageTitle: "Search", videos });
 };
 ```
+
+## 2024.10.31
+
+### Account Creation, Form Validation, Status Code, and Login Functions
+
+1. Account Creation
+
+- `postJoin` 함수는 사용자가 회원가입 시 입력한 정보를 통해 계정을 생성, 비밀번호 일치 확인, 중복된 이메일과 사용자명 검사 기능
+
+```javascript
+export const postJoin = async (req, res) => {
+  const { name, email, username, password, password2, location } = req.body;
+  // 비밀번호 검사
+  if (password !== password2) {
+    return ...
+    };
+  }
+  // 중복 검사
+  // $or 연산자는 둘 이상의 조건 중 하나라도 일치하는 문서를 찾기 위함
+  const exists = await User.exists({ $or: [{ username }, { email }] });
+  if (exists) {
+    return ...
+  }
+  try {
+    await User.create({ name, username, email, password, location });
+    return ...
+  }
+  catch (error)
+    return ...
+```
+
+2.Form validation and Status Code
+
+- `Browser` 에게 상태를 전달하는 역할이 큼
+
+```javascript
+  ...
+  return res.status(400).render
+  ...
+```
+
+3. Login Function
+
+- `postLogin` 로그인 시 데이터베이스의 비밀번호와 체크하기 위해 `bcrypt.compare` 를 사용
+
+```javascript
+const ok = await bcrypt.compare(password, user.password);
+```
+
+4. Password Hashing with Middleware
+
+- 비밀번호는 데이터베이스에 저장되기 전에 `pre("save")` 미들웨어를 통해 해시
+
+```javascript
+userSchema.pre("save", async function () {
+  this.password = await bcrypt.hash(this.password, 5);
+});
+```
