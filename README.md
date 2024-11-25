@@ -357,3 +357,67 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 5);
 });
 ```
+
+## 2024.11.25
+
+### Session, Middleware, and Template Rendering
+
+1. Session and Cookie
+
+#### 세션의 작동 원리
+
+- **쿠키**: 클라이언트에서 서버로 세션 Id를 저장해 전송
+- **세션**: 서버가 클라이언트별 상태를 유지하기 위해 세션 ID를 기반으로 데이터를 관리
+
+#### 세션 미들웨어 설정
+
+- **`express-session`** 을 사용해 세션을 설정
+- `req.sessionStore.all()` 로 현재 저장된 모든 세션 상태를 콘솔에 출력
+
+```javascript
+import session from "express-session";
+
+app.use(
+  session({
+    secret: "Hello!", // 세션 암호화 키
+    resace: true, // 세션을 강제로 다시 저장할지 여부
+    saveUninitialized: true, // 초기화되지 않은 세션을 저장할지 여부
+  })
+);
+
+// 디버킹용 세션 상태 출력 미들웨어
+app.use((req, res, next) => {
+  req.sessionStore.all((error, sessions) => {
+    console.log(sessions); // 현재 저장된 모든 세션
+    next();
+  });
+});
+```
+
+2. Locals Middleware와 Pug 템플릿
+
+#### Locals Middleware
+
+- `res.locals` 객체를 사용해 Pug 템플릿에 공통 데이터를 전달
+- 로그인 상태(`loggedIn`), 사용자 정보(`loggedInUser`), 사이트 이름(`siteName`) 등을 설정
+
+```javascript
+export const localsMiddleware = (req, res, next) => {
+  res.locals.loggedIn = Boolean(req.session.loggedIn);
+  res.locals.siteName = "Wetube";
+  res.locals.loggedInUser = req.session.user || null;
+  next();
+};
+
+app.use(localsMiddleware); // Locals Middleware 사용
+```
+
+3. Pug 템플릿에 데이터 전달
+
+- `localMiddleware`로 전달된 데이터(`loggedIn`, `loggedInUser`, `siteName`)를 사용해 템플릿을 동적으로 렌더링
+- 로그인 여부에 따라 표시되는 메뉴를 변경
+
+```pug
+li
+  #{loggedInUser.username}
+```
